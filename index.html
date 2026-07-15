@@ -1,43 +1,946 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin sinh viên</title>
+    <title>Minh Phượng • Digital Portfolio</title>
+    <!-- Google Fonts: Quicksand & Plus Jakarta Sans cho cảm giác mộng mơ, hiện đại -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Quicksand', 'sans-serif'],
+                    },
+                    colors: {
+                        dreamy: {
+                            lavender: '#E8EAFF',
+                            purple: '#9099FC',
+                            deep: '#3D449A',
+                            softPink: '#FFDCE5',
+                            indigo: '#1E2356',
+                        }
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-medium': 'float 5s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(2deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            font-family: sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            padding: 20px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 500px;
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 35, 86, 0.2);
         }
-        .info-box {
-            background-color: #2d3238;
-            border: 1px solid #3e444d;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-size: 16px;
-            width: fit-content;
-            max-width: 100%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        ::-webkit-scrollbar-thumb {
+            background: rgba(144, 153, 252, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(144, 153, 252, 0.6);
+        }
+
+        /* Dreamy glassmorphism utilities */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(144, 153, 252, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(144, 153, 252, 0.15);
+        }
+        .glass-nav {
+            background: rgba(26, 29, 66, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Background Video Overlay Styling */
+        .bg-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            overflow: hidden;
+        }
+        .bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .bg-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Gradient mơ màng đồng bộ với tone xanh-tím nhạt trong back.mp4 */
+            background: radial-gradient(circle at 50% 50%, rgba(30, 35, 86, 0.75) 0%, rgba(15, 17, 46, 0.95) 100%);
+            z-index: -9;
+        }
+
+        /* Custom Interactive Cursor Ripple */
+        .cursor-trail {
+            pointer-events: none;
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(144, 153, 252, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, opacity 0.2s;
+            z-index: 9999;
+        }
+        
+        /* Modal Animation styling */
+        .modal-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: scale(1) !important;
+        }
+        
+        .tab-active {
+            background: rgba(144, 153, 252, 0.25) !important;
+            border-color: rgba(144, 153, 252, 0.5) !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
-<body>
+<body class="text-slate-100 bg-dreamy-indigo font-sans min-h-screen relative overflow-x-hidden selection:bg-dreamy-purple/40">
 
-    <div class="container">
-        <div class="info-box">Hán Nguyễn Thuỳ Dung</div>
-        <div class="info-box">25042071</div>
-        <div class="info-box">Ngôn ngữ và Văn hoá Nhật</div>
-        <div class="info-box">Đại học Ngoại Ngữ - ĐHQGHN</div>
-        <div class="info-box">Nhập môn công nghệ số và ứng dụng trí tuệ nhân tạo</div>
+    <!-- Interactive Mouse Ripple Element -->
+    <div id="trail" class="cursor-trail hidden md:block"></div>
+
+    <!-- Background Video & Overlay -->
+    <div class="bg-video-container">
+        <video autoplay muted loop playsinline class="bg-video">
+            <source src="back.mp4" type="video/mp4">
+        </video>
+        <div class="bg-video-overlay"></div>
     </div>
 
+    <!-- Floating dreamy circles -->
+    <div class="absolute top-[20%] left-[5%] w-72 h-72 rounded-full bg-dreamy-purple/10 blur-[80px] pointer-events-none animate-float-slow"></div>
+    <div class="absolute top-[60%] right-[5%] w-96 h-96 rounded-full bg-blue-500/10 blur-[100px] pointer-events-none animate-float-medium"></div>
+
+    <!-- Header / Navigation -->
+    <nav class="glass-nav fixed top-0 left-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-dreamy-purple to-pink-300 p-[2px] animate-pulse-subtle">
+                        <div class="w-full h-full rounded-full bg-dreamy-indigo flex items-center justify-center">
+                            <span class="font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-dreamy-purple to-pink-300 text-lg">MP</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-display font-bold text-lg tracking-wider block">ĐỖ MINH PHƯỢNG</span>
+                        <span class="text-[10px] tracking-widest text-dreamy-purple block uppercase font-semibold">Digital Portfolio</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#about" class="hover:text-dreamy-purple transition-all duration-300 font-medium text-sm">Về tôi</a>
+                    <a href="#portfolio" class="hover:text-dreamy-purple transition-all duration-300 font-medium text-sm">Sản phẩm học tập</a>
+                    <a href="#reflection" class="hover:text-dreamy-purple transition-all duration-300 font-medium text-sm">Lời kết</a>
+                    <a href="https://drive.google.com/drive/folders/1W8eGUz1_gsAbwcSN4P84bUx06mMVXC2P?usp=drive_link" target="_blank" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-dreamy-purple/25 to-pink-400/20 border border-dreamy-purple/40 hover:border-pink-300/60 hover:from-dreamy-purple/40 hover:to-pink-400/30 transition-all duration-300 text-sm font-semibold shadow-sm hover:shadow-dreamy-purple/10">
+                        <i data-lucide="folder-open" class="w-4 h-4 text-pink-300"></i>
+                        <span>Xem bài tập trên GG drive</span>
+                    </a>
+                </div>
+                <!-- Mobile Navigation Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-6 space-y-3 border-t border-white/5 bg-dreamy-indigo/95 backdrop-blur-lg">
+            <a href="#about" class="block py-2 text-base font-medium text-slate-300 hover:text-white">Về tôi</a>
+            <a href="#portfolio" class="block py-2 text-base font-medium text-slate-300 hover:text-white">Sản phẩm học tập</a>
+            <a href="#reflection" class="block py-2 text-base font-medium text-slate-300 hover:text-white">Lời kết</a>
+            <a href="https://drive.google.com/drive/folders/1W8eGUz1_gsAbwcSN4P84bUx06mMVXC2P?usp=drive_link" target="_blank" class="flex items-center gap-2 py-3 px-4 rounded-xl bg-white/5 text-base font-medium text-pink-300 hover:bg-white/10">
+                <i data-lucide="folder-open" class="w-5 h-5"></i>
+                <span>Xem bài tập trên GG drive</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-36 pb-24 md:py-48 flex items-center min-h-screen overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-dreamy-purple/15 border border-dreamy-purple/30 text-dreamy-purple text-xs font-semibold tracking-wider uppercase animate-bounce">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                        <span>Welcome to my Digital Space</span>
+                    </div>
+                    <h1 class="font-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-tight">
+                        Khi <span class="text-transparent bg-clip-text bg-gradient-to-r from-dreamy-purple to-pink-300">Ngôn Ngữ</span> Gặp Gỡ 
+                        <span class="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-indigo-200">Trí Tuệ Nhân Tạo</span>
+                    </h1>
+                    <p class="text-slate-300 text-base md:text-lg max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                        Xin chào, mình là <span class="text-white font-semibold">Minh Phượng</span> — Sinh viên ngành Ngôn ngữ & Văn hóa Hàn Quốc tại ULIS. 
+                        Nơi đây lưu giữ hành trình khai phá tiềm năng của công nghệ số và AI, biến các công cụ hiện đại thành đôi cánh bổ trợ cho tư duy ngôn ngữ và sáng tạo.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#portfolio" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-dreamy-purple to-indigo-400 text-white font-semibold text-center hover:shadow-lg hover:shadow-dreamy-purple/30 transition-all hover:scale-105 active:scale-95 duration-300">
+                            Khám phá bài tập
+                        </a>
+                        <a href="#about" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-center transition-all duration-300">
+                            Tìm hiểu về mình
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96">
+                        <!-- Hologram Background Glows -->
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-dreamy-purple to-pink-300 opacity-20 blur-[40px] animate-pulse-subtle"></div>
+                        <div class="absolute inset-4 rounded-full border border-dashed border-dreamy-purple/40 animate-spin-slow"></div>
+                        
+                        <!-- Avatar Container with glass effect -->
+                        <div class="absolute inset-8 rounded-full overflow-hidden border-2 border-white/20 shadow-2xl bg-dreamy-indigo/40 flex items-center justify-center">
+                            <!-- Image path used according to constraint: "Hình 1.jpg" -->
+                            <img src="Hình 1.jpg" alt="Đỗ Minh Phượng Avatar" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700">
+                        </div>
+
+                        <!-- Floating Micro Badges -->
+                        <div class="absolute top-[10%] right-[5%] glass-card p-3 rounded-2xl flex items-center gap-2 animate-float-slow">
+                            <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                            <span class="text-xs font-semibold text-white">ULIS - VNU</span>
+                        </div>
+                        <div class="absolute bottom-[15%] left-0 glass-card p-3 rounded-2xl flex items-center gap-2 animate-float-medium">
+                            <i data-lucide="code" class="w-4 h-4 text-dreamy-purple"></i>
+                            <span class="text-xs font-semibold text-white">Digital Tech</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-24 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-dreamy-purple to-pink-200">
+                    Chân Dung Nhà Học Giả Số
+                </h2>
+                <div class="h-1 w-16 bg-gradient-to-r from-dreamy-purple to-pink-300 mx-auto rounded-full"></div>
+                <p class="text-slate-400 font-light">
+                    Sự dung hợp hài hòa giữa văn hóa ngôn ngữ đậm nét truyền thống và làn sóng công nghệ hiện đại.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Student Info Card -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-dreamy-purple/20 flex items-center justify-center">
+                            <i data-lucide="user" class="w-6 h-6 text-dreamy-purple"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-white">Thông tin sinh viên</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed font-light">
+                            Bản lý lịch học tập tại một trong những ngôi trường đại học danh tiếng hàng đầu Việt Nam.
+                        </p>
+                    </div>
+                    <div class="space-y-3 pt-4 border-t border-white/5 text-sm">
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-400">Họ và tên:</span>
+                            <span class="text-white font-medium">Đỗ Minh Phượng</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-400">Mã sinh viên:</span>
+                            <span class="text-white font-medium">25042554</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-400">Ngành học:</span>
+                            <span class="text-white font-medium text-right">Ngôn ngữ & VH Hàn Quốc</span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="text-slate-400">Đơn vị:</span>
+                            <span class="text-white font-medium text-right">ĐH Ngoại ngữ - ĐHQGHN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Highlight Card -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center">
+                            <i data-lucide="cpu" class="w-6 h-6 text-blue-300"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-white">Môn học nền tảng</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed font-light">
+                            Học phần giúp định hình tư duy giải quyết vấn đề bằng công nghệ số và áp dụng Trí tuệ Nhân tạo hữu hiệu.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 space-y-3">
+                        <span class="text-xs text-blue-300 uppercase tracking-widest block font-semibold">Tên môn học</span>
+                        <p class="text-white font-medium text-base">
+                            Nhập môn công nghệ số và ứng dụng trí tuệ nhân tạo
+                        </p>
+                        <p class="text-xs text-slate-400 font-light leading-relaxed">
+                            Nơi lý thuyết công nghệ biến thành các dự án thực tiễn phục vụ tối đa cho việc học thuật của sinh viên.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Philosophy/My Vision Card -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-500/20 flex items-center justify-center">
+                            <i data-lucide="heart" class="w-6 h-6 text-pink-300"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-white">Triết lý của Phượng</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed font-light">
+                            Cách mình kết nối ngôn từ với thế giới nhị phân. Công nghệ không triệt tiêu nhân tính, nó tôn vinh sự sáng tạo.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-white/5">
+                        <blockquote class="italic text-sm text-slate-300 font-light border-l-2 border-pink-300 pl-3">
+                            "Ngôn ngữ là cách chúng ta thấu hiểu con người; AI và công nghệ số là cách chúng ta mở rộng giới hạn của sự thấu hiểu đó đến vô cực."
+                        </blockquote>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Digital Portfolio & Exercises Section -->
+    <section id="portfolio" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div class="space-y-4">
+                    <h2 class="font-display font-bold text-3xl sm:text-4xl text-white">
+                        Hành Trình Sáng Tạo Số
+                    </h2>
+                    <div class="h-1 w-16 bg-gradient-to-r from-dreamy-purple to-pink-300 rounded-full"></div>
+                    <p class="text-slate-400 font-light max-w-xl">
+                        Tổng hợp 6 dự án thực hành cá nhân trải qua từng chặng của môn học. Click vào mỗi dự án để xem chi tiết cách thực hiện đầy đủ của mình nhé.
+                    </p>
+                </div>
+                <div>
+                    <!-- GG Drive call to action -->
+                    <a href="https://drive.google.com/drive/folders/1W8eGUz1_gsAbwcSN4P84bUx06mMVXC2P?usp=drive_link" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-400/20 to-dreamy-purple/25 border border-pink-300/40 hover:border-pink-300/80 transition-all hover:-translate-y-1 duration-300 text-sm font-semibold shadow-md shadow-pink-900/10">
+                        <i data-lucide="folder-open" class="w-4 h-4 text-pink-300"></i>
+                        <span>Xem bài tập trên GG drive</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Grid of 6 Exercises -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Task 1 -->
+                <div class="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] cursor-pointer" onclick="openModal('modal-task1')">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-dreamy-purple">Bài tập 1</span>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+                                <i data-lucide="folder" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-white leading-snug group-hover:text-dreamy-purple">
+                            Quản lý tệp và thư mục khoa học
+                        </h3>
+                        <p class="text-sm text-slate-400 font-light leading-relaxed line-clamp-4">
+                            Xây dựng thói quen tổ chức dữ liệu số ngăn nắp. Cách mình tạo lập và thao tác chuyên sâu các thư mục học tập cá nhân, thiết lập liên kết tệp an toàn trên hệ thống máy tính cá nhân.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <span class="text-xs text-dreamy-purple font-semibold flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </span>
+                        <span class="text-[11px] text-slate-500">File Explorer • OS</span>
+                    </div>
+                </div>
+
+                <!-- Task 2 -->
+                <div class="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] cursor-pointer" onclick="openModal('modal-task2')">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-blue-300">Bài tập 2</span>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+                                <i data-lucide="search" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-white leading-snug">
+                            Tìm kiếm & Đánh giá nguồn thông tin
+                        </h3>
+                        <p class="text-sm text-slate-400 font-light leading-relaxed line-clamp-4">
+                            Khảo sát đề tài "Khó khăn khi học tiếng Hàn của sinh viên Việt Nam". Phương pháp đối chiếu, kiểm chứng độ tin cậy giữa cơ sở dữ liệu học thuật và thông tin mở trên Internet để tìm kiếm tri thức chuẩn xác nhất.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <span class="text-xs text-blue-300 font-semibold flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </span>
+                        <span class="text-[11px] text-slate-500">Google Scholar • Research</span>
+                    </div>
+                </div>
+
+                <!-- Task 3 -->
+                <div class="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] cursor-pointer" onclick="openModal('modal-task3')">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-pink-300">Bài tập 3</span>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+                                <i data-lucide="terminal" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-white leading-snug">
+                            Nghệ thuật giao tiếp với AI qua Prompt
+                        </h3>
+                        <p class="text-sm text-slate-400 font-light leading-relaxed line-clamp-4">
+                            Xây dựng hệ thống câu lệnh (Prompt Engineering) tinh tế. So sánh các phản hồi từ ChatGPT & Google Gemini qua 3 tác vụ học thuật phức tạp từ Cơ bản, Cải tiến đến Nâng cao cực kỳ chi tiết.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <span class="text-xs text-pink-300 font-semibold flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </span>
+                        <span class="text-[11px] text-slate-500">LLMs • Prompt Design</span>
+                    </div>
+                </div>
+
+                <!-- Task 4 -->
+                <div class="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] cursor-pointer" onclick="openModal('modal-task4')">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-purple-300">Bài tập 4</span>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-white leading-snug">
+                            Hợp tác trực tuyến & Quản trị dự án
+                        </h3>
+                        <p class="text-sm text-slate-400 font-light leading-relaxed line-clamp-4">
+                            Làm chủ các công cụ Trello, Google Docs, Drive và Zoom trong dự án nhóm "Ứng dụng AI học tiếng Hàn". Cách điều phối công việc hiệu quả và vượt qua các thách thức cộng tác thực tế của nhóm.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <span class="text-xs text-purple-300 font-semibold flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </span>
+                        <span class="text-[11px] text-slate-500">Trello • Collaboration</span>
+                    </div>
+                </div>
+
+                <!-- Task 5 -->
+                <div class="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] cursor-pointer" onclick="openModal('modal-task5')">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-emerald-300">Bài tập 5</span>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+                                <i data-lucide="palette" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-white leading-snug">
+                            Sáng tạo nội dung với AI thế hệ mới
+                        </h3>
+                        <p class="text-sm text-slate-400 font-light leading-relaxed line-clamp-4">
+                            Thiết kế infographic bảo vệ môi trường "Khi Trái Đất ngừng nghẹt thở vì nhựa". Sự kết hợp hài hòa giữa kịch bản của ChatGPT/Gemini, hình ảnh nghệ thuật từ Leonardo.AI và bố cục Canva.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <span class="text-xs text-emerald-300 font-semibold flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </span>
+                        <span class="text-[11px] text-slate-500">Leonardo AI • Canva</span>
+                    </div>
+                </div>
+
+                <!-- Task 6 -->
+                <div class="glass-card p-6 rounded-3xl flex flex-col justify-between h-[360px] cursor-pointer" onclick="openModal('modal-task6')">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-amber-300">Bài tập 6</span>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg text-white leading-snug">
+                            Sử dụng AI có trách nhiệm học thuật
+                        </h3>
+                        <p class="text-sm text-slate-400 font-light leading-relaxed line-clamp-4">
+                            Tìm hiểu chính sách AI của ĐHQGHN, HUST & VinUni. Phân tích thực tế phát hiện lỗi "bịa đặt số liệu/nguồn" của AI trong bài luận xã hội và thiết lập bộ quy tắc ứng xử liêm chính số cho bản thân.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-white/5">
+                        <span class="text-xs text-amber-300 font-semibold flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </span>
+                        <span class="text-[11px] text-slate-500">Academic Integrity • Policy</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Reflection / Synthesis Section -->
+    <section id="reflection" class="py-24 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="glass-card p-8 md:p-12 rounded-3xl space-y-8 relative">
+                
+                <!-- Decorative element -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-dreamy-purple/10 rounded-bl-full blur-2xl"></div>
+
+                <div class="space-y-4 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-400/10 text-pink-300 text-xs font-semibold tracking-wider uppercase">
+                        <i data-lucide="award" class="w-3.5 h-3.5"></i>
+                        <span>Suy Ngẫm Hành Trình</span>
+                    </div>
+                    <h2 class="font-display font-bold text-3xl md:text-4xl text-white">
+                        Khi Công Nghệ Trở Thành Bản Năng Thứ Hai
+                    </h2>
+                    <div class="h-1 w-16 bg-gradient-to-r from-pink-300 to-dreamy-purple rounded-full mx-auto md:mx-0"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-300 font-light text-sm leading-relaxed">
+                    <div class="space-y-4">
+                        <p>
+                            Nhìn lại chặng đường học tập môn học <span class="text-white font-medium">"Nhập môn công nghệ số và ứng dụng trí tuệ nhân tạo"</span>, điều mình nhận được không chỉ là các kỹ năng sử dụng máy tính hay viết câu lệnh AI khô khan. Đó là một thế giới quan hoàn toàn mới về cách tối ưu hóa tư duy con người bằng các công cụ thông minh.
+                        </p>
+                        <p>
+                            Là một sinh viên theo đuổi chuyên ngành Hàn Quốc học đầy tính bay bổng của văn chương, lịch sử, mình từng e ngại sự khô khan của những dòng mã số hay cấu trúc thư mục máy tính. Thế nhưng khi đi sâu vào tìm hiểu, mình phát hiện ra rằng việc số hóa thông tin cũng có tính thẩm mỹ và nhịp điệu của riêng nó.
+                        </p>
+                    </div>
+                    <div class="space-y-4">
+                        <p>
+                            Sự kết nối lý thú nhất là khi mình học được cách giao tiếp thông minh với AI. Thay vì phụ thuộc và sao chép rập khuôn, mình coi AI như một người bạn đồng hành phản biện xuất sắc giúp mình phát hiện ra những điểm mờ tư duy và thử nghiệm những ý tưởng táo bạo chưa từng có.
+                        </p>
+                        <p>
+                            Cảm ơn quý Thầy Cô đã định hướng hành trang đầy giá trị này. Những kiến thức liêm chính học thuật, kỹ năng quản trị công việc đội nhóm số trên Trello hay thiết kế tư duy sáng tạo sẽ là người bạn đồng hành đáng tin cậy giúp mình vững bước trên giảng đường đại học và sự nghiệp số tương lai.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full overflow-hidden border border-white/15">
+                            <img src="Hình 1.jpg" alt="Phượng" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <span class="text-white font-semibold block text-sm">Đỗ Minh Phượng</span>
+                            <span class="text-xs text-slate-400 block font-light">Korean Major Student • ULIS</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <a href="https://drive.google.com/drive/folders/1W8eGUz1_gsAbwcSN4P84bUx06mMVXC2P?usp=drive_link" target="_blank" class="px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm transition-all duration-300 flex items-center gap-2">
+                            <i data-lucide="cloud" class="w-4 h-4 text-dreamy-purple"></i>
+                            <span>Dữ liệu học tập Drive</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 bg-dreamy-indigo/60 backdrop-blur-md relative z-10 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <span class="font-display font-bold text-lg tracking-wider text-white">MINH PHƯỢNG • ULIS</span>
+            <p class="text-xs text-slate-500 font-light">
+                © 2026 Đỗ Minh Phượng. Thiết kế cho mục đích học tập cá nhân.
+            </p>
+            <div class="flex justify-center gap-4 text-slate-400">
+                <span class="text-xs">Mã SV: 25042554</span>
+                <span>•</span>
+                <span class="text-xs">Đại học Ngoại ngữ - ĐHQGHN</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALS SYSTEM (Hidden details of exercises) -->
+    
+    <!-- Modal Task 1 -->
+    <div id="modal-task1" class="fixed inset-0 z-50 overflow-y-auto hidden bg-dreamy-indigo/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal('modal-task1')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="space-y-4">
+                <span class="text-xs font-semibold text-dreamy-purple uppercase tracking-widest block">Nhiệm vụ 1</span>
+                <h3 class="font-display font-bold text-2xl md:text-3xl text-white">Kiến tạo trật tự không gian số</h3>
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                    Quá trình thiết lập hệ thống thư mục khoa học trên máy tính cá nhân để chuẩn bị nền tảng lưu trữ an toàn trong suốt khóa học.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div class="space-y-4 bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="terminal" class="w-4 h-4 text-dreamy-purple"></i> Các bước triển khai
+                    </h4>
+                    <ul class="space-y-3 font-light text-slate-300 list-decimal list-inside">
+                        <li>Truy cập thư mục không thuộc hệ điều hành (Ổ đĩa <code class="bg-black/40 px-1.5 py-0.5 rounded text-pink-300">E:</code>).</li>
+                        <li>Tạo lập cây thư mục mang tên <code class="bg-black/40 px-1.5 py-0.5 rounded text-pink-300">ThucHanh_DoMinhPhuong</code>.</li>
+                        <li>Thiết kế tệp văn bản thô sơ khai ban đầu <code class="bg-black/40 px-1.5 py-0.5 rounded text-pink-300">GhiChu.txt</code>.</li>
+                        <li>Thay đổi định danh tệp tin bảo mật thành <code class="bg-black/40 px-1.5 py-0.5 rounded text-pink-300">GhiChuQuanTrong.txt</code>.</li>
+                        <li>Phát triển các nhánh cây thư mục con <code class="bg-black/40 px-1.5 py-0.5 rounded text-pink-300">TaiLieu</code> và di chuyển tệp an toàn.</li>
+                    </ul>
+                </div>
+                <div class="space-y-4 bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="database" class="w-4 h-4 text-dreamy-purple"></i> Bài học rút ra
+                    </h4>
+                    <p class="text-slate-300 font-light leading-relaxed">
+                        Từ việc thao tác cắt dán (Cut & Paste), sao chép (Copy & Paste), xóa tạm thời trong <span class="text-white font-medium">Recycle Bin</span> và xóa vĩnh viễn bằng tổ hợp phím <kbd class="bg-black/40 px-1.5 py-0.5 rounded text-xs text-white">Shift + Delete</kbd>, mình nhận ra việc tổ chức cây thư mục chuẩn xác từ đầu giúp tiết kiệm cực kỳ nhiều thời gian tìm kiếm dữ liệu.
+                    </p>
+                    <p class="text-xs text-slate-400 font-light italic">
+                        "Một không gian lưu trữ ngăn nắp phản chiếu một bộ óc tư duy khoa học."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Task 2 -->
+    <div id="modal-task2" class="fixed inset-0 z-50 overflow-y-auto hidden bg-dreamy-indigo/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal('modal-task2')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="space-y-4">
+                <span class="text-xs font-semibold text-blue-300 uppercase tracking-widest block">Nhiệm vụ 2</span>
+                <h3 class="font-display font-bold text-2xl md:text-3xl text-white">Tìm ngọc giữa đại dương thông tin</h3>
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                    Khảo cứu các nguồn tài liệu học thuật về chủ đề: <span class="text-white font-semibold">"Khó khăn trong việc học tiếng Hàn của sinh viên Việt Nam"</span>.
+                </p>
+            </div>
+            
+            <div class="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/5 text-sm">
+                <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i data-lucide="check-square" class="w-4 h-4 text-blue-300"></i> Trọng tâm phân tích
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-light text-slate-300">
+                    <div class="space-y-3">
+                        <p><strong class="text-white">1. Cơ sở dữ liệu học thuật:</strong> Google Scholar, arXiv mang tính khoa học cao, thông tin chính thống đầy đủ phương pháp nghiên cứu, nhưng nội dung chuyên môn cao và kén người đọc.</p>
+                        <p><strong class="text-white">2. Tạp chí khoa học chuyên ngành:</strong> Có độ tin cậy tuyệt đối nhờ hệ thống phản biện đồng nghiệp (peer-reviewed), cấu trúc logic hoàn hảo và cập nhật liên tục các xu hướng (2017-2025).</p>
+                    </div>
+                    <div class="space-y-3">
+                        <p><strong class="text-white">3. Sách chuyên khảo:</strong> Nền tảng lý thuyết sâu sắc, có giá trị lâu dài được xuất bản uy tín, nhưng hạn chế tính thời sự vì nhiều sách được viết khá lâu.</p>
+                        <p><strong class="text-white">4. Nguồn mở Internet:</strong> Dễ tiếp cận, đa dạng trải nghiệm cá nhân sinh động nhưng độ tin cậy thấp, thiếu trích dẫn khoa học kiểm chứng.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/10 text-xs text-slate-300 space-y-3">
+                <span class="font-semibold text-blue-300 block">Bài học đắt giá về tìm kiếm:</span>
+                <p class="font-light leading-relaxed">
+                    Khi đánh giá độ tin cậy của một bài nghiên cứu học thuật, mình luôn dựa vào bộ khung tiêu chuẩn: <span class="text-white font-medium">Trình độ Tác giả</span> (giáo sư, giảng viên), <span class="text-white font-medium">Cơ quan xuất bản</span>, <span class="text-white font-medium">Phương pháp nghiên cứu rõ ràng</span> (thực chứng, thống kê), <span class="text-white font-medium">Hệ thống trích dẫn minh bạch</span>, và <span class="text-white font-medium">Tính cập nhật</span> của bài viết.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Task 3 -->
+    <div id="modal-task3" class="fixed inset-0 z-50 overflow-y-auto hidden bg-dreamy-indigo/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal('modal-task3')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="space-y-4">
+                <span class="text-xs font-semibold text-pink-300 uppercase tracking-widest block">Nhiệm vụ 3</span>
+                <h3 class="font-display font-bold text-2xl md:text-3xl text-white">Nghệ thuật giao tiếp thông thái cùng AI</h3>
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                    Thiết kế và thử nghiệm so sánh 3 bậc Prompt (Cơ bản, Cải tiến, Nâng cao) để nhận thức rõ sức ảnh hưởng của việc ra lệnh logic cho Trí tuệ Nhân tạo.
+                </p>
+            </div>
+
+            <!-- Tabs System inside Modal -->
+            <div class="flex flex-wrap gap-2 border-b border-white/5 pb-4">
+                <button onclick="switchTab('tab-t3-1', 'content-t3-1')" id="tab-t3-1" class="tab-btn px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 text-slate-400 border border-transparent hover:text-white tab-active">
+                    Tác vụ 1: Tóm tắt bài đọc
+                </button>
+                <button onclick="switchTab('tab-t3-2', 'content-t3-2')" id="tab-t3-2" class="tab-btn px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 text-slate-400 border border-transparent hover:text-white">
+                    Tác vụ 2: Giải thích khái niệm
+                </button>
+                <button onclick="switchTab('tab-t3-3', 'content-t3-3')" id="tab-t3-3" class="tab-btn px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 text-slate-400 border border-transparent hover:text-white">
+                    Tác vụ 3: Tạo câu hỏi ôn tập
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="content-t3-1" class="tab-content space-y-4 text-sm font-light text-slate-300">
+                <p><strong class="text-white block mb-1">Mục tiêu:</strong> Tóm tắt bài nghiên cứu tác động của mạng xã hội đối với sinh viên.</p>
+                <p>• <strong class="text-white">Prompt Cơ bản:</strong> "Hãy tóm tắt bài nghiên cứu về..." -> Kết quả chung chung, thiếu cấu trúc rõ ràng.</p>
+                <p>• <strong class="text-white">Prompt Cải tiến:</strong> Thêm giới hạn 250 từ, yêu cầu làm rõ mục đích, kết quả -> Nội dung có logic hơn.</p>
+                <p>• <strong class="text-white">Prompt Nâng cao (Role & CoT):</strong> Gán vai trò "Trợ lý học thuật", chia thành 4 bước phân tích (chủ đề, phương pháp, luận điểm, kết luận) -> AI tạo ra bài tóm tắt chuẩn học thuật hoàn hảo.</p>
+            </div>
+
+            <div id="content-t3-2" class="tab-content hidden space-y-4 text-sm font-light text-slate-300">
+                <p><strong class="text-white block mb-1">Mục tiêu:</strong> Giải thích khái niệm "Toàn cầu hóa".</p>
+                <p>• <strong class="text-white">Prompt Cơ bản:</strong> Đưa ra lý thuyết thuần túy khá trừu tượng và khô khan.</p>
+                <p>• <strong class="text-white">Prompt Cải tiến:</strong> Yêu cầu giải thích bằng ngôn ngữ đơn giản phù hợp học sinh cấp 3 kèm ví dụ thực tế Việt Nam -> Rất trực quan.</p>
+                <p>• <strong class="text-white">Prompt Nâng cao:</strong> Gán vai "Giáo viên Địa lý", phân nhỏ thành 4 bước (Định nghĩa, Đặc điểm, Ví dụ thế giới/Việt Nam, Tóm tắt ghi nhớ) -> Đạt hiệu quả sư phạm tối ưu.</p>
+            </div>
+
+            <div id="content-t3-3" class="tab-content hidden space-y-4 text-sm font-light text-slate-300">
+                <p><strong class="text-white block mb-1">Mục tiêu:</strong> Soạn câu hỏi trắc nghiệm ôn tập "Cách mạng Công nghiệp 4.0".</p>
+                <p>• <strong class="text-white">Prompt Cơ bản:</strong> Câu hỏi đơn điệu, dễ dãi, thiếu phân tầng độ khó.</p>
+                <p>• <strong class="text-white">Prompt Cải tiến:</strong> Tạo 20 câu trắc nghiệm 4 đáp án kèm đáp án chuẩn -> Khá ổn định.</p>
+                <p>• <strong class="text-white">Prompt Nâng cao:</strong> Đóng vai giáo viên Công nghệ, quy định rõ tỷ lệ câu hỏi (7 câu Nhận biết, 10 câu Thông hiểu, 3 câu Vận dụng) kèm giải thích chi tiết lý do chọn đáp án -> Thang đánh giá chặt chẽ.</p>
+            </div>
+
+            <div class="bg-pink-950/40 p-5 rounded-2xl border border-pink-500/10 text-xs text-slate-300">
+                <span class="font-semibold text-pink-300 block mb-1">Nguyên tắc cốt lõi:</span>
+                Hiệu quả của Prompt không nằm ở độ dài văn bản mà nằm ở sự logic, rõ ràng, phân rã công việc từng bước (Chain of Thought) và định dạng đầu ra chuẩn mực.
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Task 4 -->
+    <div id="modal-task4" class="fixed inset-0 z-50 overflow-y-auto hidden bg-dreamy-indigo/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal('modal-task4')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="space-y-4">
+                <span class="text-xs font-semibold text-purple-300 uppercase tracking-widest block">Nhiệm vụ 4</span>
+                <h3 class="font-display font-bold text-2xl md:text-3xl text-white">Kiến tạo dự án nhóm trực tuyến</h3>
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                    Hợp tác thiết lập dự án nghiên cứu: <span class="text-white font-medium">"Ứng dụng trí tuệ nhân tạo trong việc học tiếng Hàn của sinh viên hiện nay"</span>.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div class="space-y-4 bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="wrench" class="w-4 h-4 text-purple-300"></i> Hệ thống công cụ số
+                    </h4>
+                    <ul class="space-y-2 font-light text-slate-300">
+                        <li><strong class="text-white">Trello:</strong> Thiết lập bảng Kanban theo dõi tiến độ "Chưa bắt đầu", "Đang làm", "Hoàn thành" cùng nhãn gắn thẻ cá nhân rõ ràng.</li>
+                        <li><strong class="text-white">Google Docs:</strong> Đồng soạn thảo báo cáo, thảo luận nhận xét trực tiếp trực tuyến.</li>
+                        <li><strong class="text-white">Google Drive:</strong> Lưu trữ dữ liệu tài liệu tham khảo khoa học, phân quyền truy cập thuận tiện.</li>
+                        <li><strong class="text-white">Zoom & Teams:</strong> Trao đổi nhóm định kỳ mỗi tối.</li>
+                    </ul>
+                </div>
+                <div class="space-y-4 bg-white/5 p-5 rounded-2xl border border-white/5">
+                    <h4 class="font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="frown" class="w-4 h-4 text-purple-300"></i> Khó khăn & Giải pháp thực tế
+                    </h4>
+                    <p class="text-slate-300 font-light leading-relaxed">
+                        Nhóm gặp các xung đột về lệch lịch học cá nhân, thành viên phản hồi thông tin chậm và văn phong tổng hợp bị rời rạc. 
+                    </p>
+                    <p class="text-slate-300 font-light leading-relaxed">
+                        <strong class="text-white">Giải pháp:</strong> Báo cáo trước lịch rảnh để leader lên lịch họp chung, tích cực tag tên trên Trello/Zalo để nhắc nhở và phân công rà soát kiểm tra chéo lẫn nhau, hỗ trợ định dạng trích dẫn theo chuẩn APA7.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Task 5 -->
+    <div id="modal-task5" class="fixed inset-0 z-50 overflow-y-auto hidden bg-dreamy-indigo/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal('modal-task5')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="space-y-4">
+                <span class="text-xs font-semibold text-emerald-300 uppercase tracking-widest block">Nhiệm vụ 5</span>
+                <h3 class="font-display font-bold text-2xl md:text-3xl text-white">Sáng tạo nội dung số bùng nổ cùng Generative AI</h3>
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                    Thiết kế Infographic truyền thông môi trường: <span class="text-white font-semibold">"Khi Trái Đất ngừng 'nghẹt thở' vì nhựa"</span>.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-300 font-light">
+                <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <span class="font-semibold text-emerald-300 block">Kịch bản (ChatGPT)</span>
+                    <p>Sử dụng Prompt tối ưu hóa để lấy ý tưởng cấu trúc sườn 3 phần (Thực trạng, Hậu quả, Giải pháp) và viết lời mô tả (sapo) ngắn gọn, sắc sảo.</p>
+                </div>
+                <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <span class="font-semibold text-emerald-300 block">Visual (Leonardo.AI)</span>
+                    <p>Tạo ảnh bằng 3 câu lệnh tiếng Anh:</p>
+                    <ul class="list-disc list-inside space-y-1 text-xs">
+                        <li>"Wide-angle view of rivers flowing into oceans full of plastic..."</li>
+                        <li>"Dead fish carcasses in polluted water..."</li>
+                        <li>"Clean city environment, people sorting..."</li>
+                    </ul>
+                </div>
+                <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <span class="font-semibold text-emerald-300 block">Thiết kế (Canva AI)</span>
+                    <p>Sắp xếp bố cục tối giản, hài hòa hóa bảng màu xanh dương trầm ấm và chèn các icon tinh gọn để tăng tính tương tác thị giác tối đa.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Task 6 -->
+    <div id="modal-task6" class="fixed inset-0 z-50 overflow-y-auto hidden bg-dreamy-indigo/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+        <div class="glass-card max-w-4xl w-full rounded-3xl p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal('modal-task6')" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="space-y-4">
+                <span class="text-xs font-semibold text-amber-300 uppercase tracking-widest block">Nhiệm vụ 6</span>
+                <h3 class="font-display font-bold text-2xl md:text-3xl text-white">Liêm chính học thuật trong thời đại AI</h3>
+                <p class="text-slate-300 font-light text-sm leading-relaxed">
+                    Khảo cứu chính sách sử dụng AI có trách nhiệm của ĐHQGHN, so sánh với HUST & VinUni và phân tích thực chứng lỗi từ mô hình ngôn ngữ lớn.
+                </p>
+            </div>
+            
+            <div class="space-y-4 bg-white/5 p-5 rounded-2xl border border-white/5 text-sm">
+                <h4 class="font-semibold text-white flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-300"></i> Bài học từ sự ảo giác (Hallucination) của AI
+                </h4>
+                <p class="text-slate-300 font-light leading-relaxed">
+                    Khi mình ra lệnh cho AI xây dựng dàn ý chi tiết bài tiểu luận <span class="text-white font-medium">"Tác động của mạng xã hội đến tâm lý học đường của học sinh hiện nay"</span>, AI đã tạo ra các số liệu và tự bịa ra các tác giả giả lập có tên tuổi rất đẹp. Khi đối chiếu ngược lại trên Google Scholar, mình phát hiện đây là nguồn tin giả mạo. Mình lập tức xóa bỏ và tự tìm nguồn chuẩn xác để bổ sung.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5 text-slate-300 font-light">
+                    <span class="font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="landmark" class="w-4 h-4 text-amber-300"></i> Chính sách các trường đại học
+                    </span>
+                    <p><strong class="text-white">ĐHQGHN:</strong> Khuyến khích sử dụng có kiểm soát làm công cụ trợ giúp sáng tạo ý tưởng nhưng nghiêm cấm đạo văn cấu trúc và copy-paste nguyên văn, quy rõ trách nhiệm giải trình cho sinh viên.</p>
+                    <p><strong class="text-white">HUST & VinUni:</strong> HUST kiểm soát trực tiếp qua vấn đáp giải trình thuật toán, VinUni sử dụng hệ thống quét Turnitin nghiêm ngặt chuẩn phương Tây.</p>
+                </div>
+                <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5 text-slate-300 font-light">
+                    <span class="font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="compass" class="w-4 h-4 text-amber-300"></i> Quy tắc liêm chính cá nhân
+                    </span>
+                    <p class="text-xs space-y-1">
+                        <span>1. Luôn tự xây dựng đề cương thô của bản thân trước khi dùng AI.</span><br>
+                        <span>2. Tuyệt đối đối chiếu xác thực chéo mọi số liệu từ AI cung cấp.</span><br>
+                        <span>3. Tuyên bố trung thực, rõ ràng tỷ lệ AI hỗ trợ trong báo cáo học thuật.</span><br>
+                        <span>4. Không bao giờ biến bản thảo thô của AI thành văn phong của mình.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts for animations and mouse trailing -->
+    <script>
+        // Init Lucide icons
+        lucide.createIcons();
+
+        // Mouse trailing effect matching water ripples
+        const trail = document.getElementById('trail');
+        document.addEventListener('mousemove', (e) => {
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+        });
+
+        // Hover effect for mouse trail
+        const interactiveElements = document.querySelectorAll('a, button, .glass-card, [onclick]');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                trail.style.width = '30px';
+                trail.style.height = '30px';
+                trail.style.backgroundColor = 'rgba(144, 153, 252, 0.2)';
+                trail.style.border = '1.5px solid rgba(144, 153, 252, 0.6)';
+            });
+            el.addEventListener('mouseleave', () => {
+                trail.style.width = '12px';
+                trail.style.height = '12px';
+                trail.style.backgroundColor = 'rgba(144, 153, 252, 0.4)';
+                trail.style.border = 'none';
+            });
+        });
+
+        // Sticky Navbar effect
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.style.paddingTop = '0.5rem';
+                nav.style.paddingBottom = '0.5rem';
+                nav.style.background = 'rgba(15, 17, 46, 0.85)';
+            } else {
+                nav.style.paddingTop = '1.25rem';
+                nav.style.paddingBottom = '1.25rem';
+                nav.style.background = 'rgba(26, 29, 66, 0.5)';
+            }
+        });
+
+        // Mobile Menu trigger
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Modals management
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Lock background scroll
+            setTimeout(() => {
+                modal.classList.add('modal-active');
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('modal-active');
+            document.body.style.overflow = ''; // Unlock background scroll
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Close modal when clicking outside content
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('fixed') && e.target.classList.contains('z-50')) {
+                closeModal(e.target.id);
+            }
+        });
+
+        // Tab Switching in Modal 3
+        function switchTab(btnId, contentId) {
+            // Deactivate all tabs & contents
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('tab-active'));
+            contents.forEach(content => content.classList.add('hidden'));
+
+            // Activate target
+            document.getElementById(btnId).classList.add('tab-active');
+            document.getElementById(contentId).classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
