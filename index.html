@@ -141,7 +141,7 @@
             font-size: 1.5rem;
             color: var(--primary-pink);
             letter-spacing: -0.5px;
-            text-transform: lowercase;
+            text-transform: none; /* Changed from lowercase to none */
         }
 
         nav {
@@ -686,6 +686,131 @@
             margin-bottom: 10px;
         }
 
+        /* Beautiful Redeisgned Footer with glassmorphism layout (Updated) */
+        footer {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 60px 0 30px 0;
+            margin-top: 80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary-pink);
+            border-radius: 1px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary-pink);
+            margin-bottom: 15px;
+        }
+
+        .footer-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 320px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .footer-links li a i {
+            width: 14px;
+            height: 14px;
+            color: var(--primary-pink);
+            transition: transform 0.3s;
+        }
+
+        .footer-links li a:hover {
+            color: var(--primary-pink);
+        }
+
+        .footer-links li a:hover i {
+            transform: translateX(4px);
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-pink-light);
+            color: var(--primary-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(219, 90, 124, 0.1);
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary-pink);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(219, 90, 124, 0.2);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(117, 103, 105, 0.08);
+            padding-top: 25px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
         /* Immersive Detailed Modal & Tab Systems */
         .modal {
             position: fixed;
@@ -949,6 +1074,14 @@
 
             .skills-right-grid { grid-template-columns: repeat(2, 1fr); }
             .reflection-grid { grid-template-columns: 1fr; }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .footer-desc {
+                max-width: 100%;
+            }
         }
 
         @media (max-width: 600px) {
@@ -1049,7 +1182,7 @@
             </div>
         </section>
 
-        <!-- Standardized & Centered Skills Section (Updated) -->
+        <!-- Standardized & Centered Skills Section (Updated Layout) -->
         <section id="skills" style="min-height: auto; padding: 60px 0; display: block;">
             <div class="section-header">
                 <h2>Kỹ năng đạt được</h2>
@@ -1087,7 +1220,7 @@
             </div>
         </section>
 
-        <!-- Centered & Enlarged Projects Showcase (Updated) -->
+        <!-- Centered & Enlarged Projects Showcase -->
         <section id="assignments" style="display:block;">
             <div class="section-header">
                 <h2>Bài tập đã hoàn thiện</h2>
@@ -1193,7 +1326,7 @@
             </div>
         </section>
 
-        <!-- Centered & Enlarged Portfolio Review Section (Updated) -->
+        <!-- Centered & Enlarged Portfolio Review Section -->
         <section id="reflection">
             <div class="reflection-container">
                 <div class="section-header">
@@ -1239,6 +1372,41 @@
 
     </div>
 
+    <!-- Beautiful Redesigned Footer (Updated Layout) -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <!-- Column 1: Brand/Logo -->
+                <div class="footer-col">
+                    <div class="footer-logo">Đỗ Minh Phượng.</div>
+                    <p class="footer-desc">Hành trình khám phá sự giao thoa kỳ diệu giữa Ngôn ngữ Hàn Quốc và Công nghệ số thông minh tại ULIS.</p>
+                </div>
+                <!-- Column 2: Quick Links -->
+                <div class="footer-col">
+                    <h4>Khám phá nhanh</h4>
+                    <ul class="footer-links">
+                        <li><a href="#hero"><i data-lucide="chevron-right"></i> Giới thiệu</a></li>
+                        <li><a href="#skills"><i data-lucide="chevron-right"></i> Kỹ năng</a></li>
+                        <li><a href="#assignments"><i data-lucide="chevron-right"></i> Bài tập</a></li>
+                        <li><a href="#reflection"><i data-lucide="chevron-right"></i> Tổng kết</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3: Social/Drive -->
+                <div class="footer-col">
+                    <h4>Kết nối với mình</h4>
+                    <div class="footer-socials">
+                        <a href="mailto:dominhphuong2801@gmail.com" class="social-icon" title="Gửi Mail"><i data-lucide="mail"></i></a>
+                        <a href="https://drive.google.com/drive/folders/1W8eGUz1_gsAbwcSN4P84bUx06mMVXC2P?usp=drive_link" target="_blank" class="social-icon" title="Google Drive"><i data-lucide="cloud"></i></a>
+                        <a href="#hero" class="social-icon" title="Về đầu trang"><i data-lucide="sparkles"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Đỗ Minh Phượng. Được xây dựng tinh tế bằng sự trân trọng và niềm đam mê sáng tạo tại ULIS.</p>
+            </div>
+        </div>
+    </footer>
+
     <!-- Interactive Modular Overlay Detail Modal -->
     <div class="modal" id="info-modal" onclick="closeModalOnOuter(event)">
         <div class="modal-content">
@@ -1254,11 +1422,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Soft Footer -->
-    <footer>
-        <p>© 2026 Đỗ Minh Phượng. Thiết kế bằng cả đam mê sáng tạo tại ULIS.</p>
-    </footer>
 
     <script>
         // Init Lucide Icons
