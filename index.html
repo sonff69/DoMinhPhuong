@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minh Phượng's Digital Portfolio</title>
+    <title>Đỗ Minh Phượng Portfolio</title>
     <!-- Google Fonts: Quicksand & Outfit -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons CDN -->
@@ -439,42 +439,35 @@
             margin-top: 3px;
         }
 
-        /* Asymmetric Layout for Skills Section (Matching Image exactly) */
-        .skills-layout-container {
-            display: grid;
-            grid-template-columns: 1fr 2.5fr;
-            gap: 50px;
-            align-items: center;
-            width: 100%;
-        }
-
-        .skills-left-title {
+        /* Standardized Section Headings - Enlarged & Centered (Image Update) */
+        .section-header {
             font-family: var(--font-display);
-            font-size: 3.2rem;
+            font-size: 2.7rem;
             font-weight: 700;
-            line-height: 1.2;
+            text-align: center;
+            margin-bottom: 45px;
             color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
-        .skills-title-line {
+        .section-header::after {
+            content: '';
             width: 50px;
-            height: 4px;
-            background-color: var(--primary-pink);
-            margin-top: 15px;
+            height: 3px;
             border-radius: 2px;
+            background: var(--primary-pink);
         }
 
+        /* Horizontal Grid for Skills (Image Update) */
         .skills-right-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
+            width: 100%;
         }
-
-        /* Specific positions */
-        .skill-card-1 { grid-column: 1 / 2; grid-row: 1; }
-        .skill-card-2 { grid-column: 2 / 3; grid-row: 1; }
-        .skill-card-3 { grid-column: 3 / 4; grid-row: 1; }
-        .skill-card-4 { grid-column: 1 / 2; grid-row: 2; }
 
         .skill-card {
             background: var(--glass-bg);
@@ -941,17 +934,6 @@
             margin-top: 15px;
         }
 
-        /* Footer minimal styling */
-        footer {
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid rgba(117, 103, 105, 0.08);
-            background-color: rgba(252, 248, 248, 0.6);
-            backdrop-filter: blur(10px);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
         /* Screen adaptive media queries */
         @media (max-width: 900px) {
             .hero-wrapper {
@@ -965,11 +947,12 @@
             .hero-actions-row { justify-content: center; }
             nav { display: none; }
 
-            .skills-layout-container { grid-template-columns: 1fr; gap: 30px; text-align: center; }
-            .skills-left-title { display: flex; flex-direction: column; align-items: center; }
-            .skills-right-grid { grid-template-columns: 1fr; }
-            .skill-card-1, .skill-card-2, .skill-card-3, .skill-card-4 { grid-column: auto; grid-row: auto; }
+            .skills-right-grid { grid-template-columns: repeat(2, 1fr); }
             .reflection-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .skills-right-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1066,51 +1049,45 @@
             </div>
         </section>
 
-        <!-- Asymmetric Skills Section -->
-        <section id="skills" style="min-height: auto; padding: 60px 0;">
-            <div class="skills-layout-container">
-                <div class="skills-left-title">
-                    <span>Kỹ năng</span>
-                    <span>đạt được</span>
-                    <div class="skills-title-line"></div>
+        <!-- Standardized & Centered Skills Section (Updated) -->
+        <section id="skills" style="min-height: auto; padding: 60px 0; display: block;">
+            <div class="section-header">
+                <h2>Kỹ năng đạt được</h2>
+            </div>
+            
+            <div class="skills-right-grid">
+                <div class="skill-card">
+                    <div class="skill-card-icon">
+                        <i data-lucide="folder-open" style="width:28px; height:28px;"></i>
+                    </div>
+                    <h4>Sắp xếp cấu trúc dữ liệu</h4>
+                    <p>Khả năng tổ chức dữ liệu cá nhân chặt chẽ, tối ưu luồng thông tin học thuật gọn gàng.</p>
                 </div>
-                
-                <div class="skills-right-grid">
-                    <!-- Row 1 -->
-                    <div class="skill-card skill-card-1">
-                        <div class="skill-card-icon">
-                            <i data-lucide="folder-open" style="width:28px; height:28px;"></i>
-                        </div>
-                        <h4>Sắp xếp cấu trúc dữ liệu</h4>
-                        <p>Khả năng tổ chức dữ liệu cá nhân chặt chẽ, tối ưu luồng thông tin học thuật gọn gàng.</p>
+                <div class="skill-card">
+                    <div class="skill-card-icon">
+                        <i data-lucide="terminal" style="width:28px; height:28px;"></i>
                     </div>
-                    <div class="skill-card skill-card-2">
-                        <div class="skill-card-icon">
-                            <i data-lucide="terminal" style="width:28px; height:28px;"></i>
-                        </div>
-                        <h4>Prompt Engineering</h4>
-                        <p>Làm chủ kỹ thuật thiết lập vai trò và câu lệnh chuẩn hóa để kiểm soát kết quả từ AI.</p>
+                    <h4>Prompt Engineering</h4>
+                    <p>Làm chủ kỹ thuật thiết lập vai trò và câu lệnh chuẩn hóa để kiểm soát kết quả từ AI.</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-icon">
+                        <i data-lucide="users" style="width:28px; height:28px;"></i>
                     </div>
-                    <div class="skill-card skill-card-3">
-                        <div class="skill-card-icon">
-                            <i data-lucide="users" style="width:28px; height:28px;"></i>
-                        </div>
-                        <h4>Cộng tác và quản trị số</h4>
-                        <p>Thành thạo điều phối tiến độ làm việc nhóm thông qua các ứng dụng Trello, Drive, Docs.</p>
+                    <h4>Cộng tác và quản trị số</h4>
+                    <p>Thành thạo điều phối tiến độ làm việc nhóm thông qua các ứng dụng Trello, Drive, Docs.</p>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-card-icon">
+                        <i data-lucide="shield-check" style="width:28px; height:28px;"></i>
                     </div>
-                    <!-- Row 2 -->
-                    <div class="skill-card skill-card-4">
-                        <div class="skill-card-icon">
-                            <i data-lucide="shield-check" style="width:28px; height:28px;"></i>
-                        </div>
-                        <h4>Liêm chính học thuật</h4>
-                        <p>Khai thác công cụ số văn minh kết hợp tư duy tự chủ và quy trình đối soát nghiêm ngặt.</p>
-                    </div>
+                    <h4>Liêm chính học thuật</h4>
+                    <p>Khai thác công cụ số văn minh kết hợp tư duy tự chủ và quy trình đối soát nghiêm ngặt.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Detailed Project Showcases -->
+        <!-- Centered & Enlarged Projects Showcase (Updated) -->
         <section id="assignments" style="display:block;">
             <div class="section-header">
                 <h2>Bài tập đã hoàn thiện</h2>
@@ -1162,7 +1139,7 @@
                             <i data-lucide="terminal" style="width:20px;"></i>
                         </div>
                         <h3>Nghệ thuật xây dựng Prompt với AI</h3>
-                        <p>Thiết kế hệ thống prompt học thuật 3 tầng (Cơ bản, Cải tiến, Nâng cao) giải quyết 3 tác vụ học tập cốt lõi.</p>
+                        <p>Thiết lập và phân tích 3 cấp độ câu lệnh để tối ưu kết quả tóm tắt học thuật, giải nghĩa thuật ngữ và soạn câu hỏi ôn tập.</p>
                     </div>
                     <div class="assignment-footer">
                         <span>Chi tiết bài tập</span> <i data-lucide="chevron-right" style="width:16px;"></i>
@@ -1216,7 +1193,7 @@
             </div>
         </section>
 
-        <!-- Dynamic Summary Section (Review of difficulties, advantages, and lessons) -->
+        <!-- Centered & Enlarged Portfolio Review Section (Updated) -->
         <section id="reflection">
             <div class="reflection-container">
                 <div class="section-header">
@@ -1464,7 +1441,7 @@
                                     <div class="step-num-icon">4</div>
                                     <div class="step-text">
                                         <h5>Nguồn mở trên Internet (Blog, Website cá nhân)</h5>
-                                        <p><strong>Mức độ tin cậy: Trung bình - Thấp.</strong> Do giáo viên tự do hoặc người học viết, không qua kiểm duyệt. Ưu điểm: Dễ tiếp cận, cập nhật nhanh. Nhược điểm: Không mang tính học thuật, thiếu kiểm chứng thực nghiệm.</p>
+                                        <p><strong>Mức độ tin cậy: Trung bình - Thấp.</strong> Do giáo viên tự do hoặc người học viết, không qua kiểm duyệt. Ưu điểm: Dễ tiếp cận, cập nhật nhanh. Nhược điểm: Không mang tính học thuật, thiếu kiểm chứng khoa học.</p>
                                     </div>
                                 </div>
                             </div>
